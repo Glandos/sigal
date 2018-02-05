@@ -186,16 +186,17 @@ figcaption {
   text-align: center;
   float:left;
 }
-.thumbnail img {
+.thumbnail {
   max-width: 85%;
+  background-color: #fff;
   height: auto;
-  margin: 0 2px 5px 2px;
-  border: 10px solid #fff;
+  margin: 0 4px 8px 4px;
+  border: 5px solid #fff;
   border-radius: 2px 2px 2px 2px;
   box-shadow: 0 0 3px #B1B1B1;
   padding: 0 0 2px;
 }
-.thumbnail img:hover {
+.thumbnail:hover {
   box-shadow: 0 0 5px #818181;
 }
 
