@@ -128,10 +128,17 @@ strong {
   font-weight: 600;
 }
 
-figcaption {
+figcaption.media-description {
   display:none;
 }
 
+figcaption.media-title {
+  font-size: 80%;
+  line-height: initial;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
 .breadcrumb {
   margin-top: 1ex;
   line-height: 1;
