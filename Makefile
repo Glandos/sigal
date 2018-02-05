@@ -1,8 +1,9 @@
 COLORBOX_PATH=sigal/themes/colorbox/static/css
 GALLERIA_PATH=sigal/themes/galleria/static/css
 PHOTOSWIPE_PATH=sigal/themes/photoswipe/static
+PHOTOSWIPE_BLOG_PATH=sigal/themes/photoswipe_blog/static
 
-all: colorbox galleria photoswipe
+all: colorbox galleria photoswipe photoswipe_blog
 
 init:
 	pip install -r requirements.txt
@@ -18,6 +19,9 @@ galleria:
 
 photoswipe:
 	cat $(PHOTOSWIPE_PATH)/styles.css $(PHOTOSWIPE_PATH)/default-skin/default-skin.css $(PHOTOSWIPE_PATH)/photoswipe.css | cssmin > $(PHOTOSWIPE_PATH)/styles.min.css
+
+photoswipe_blog:
+	cat $(PHOTOSWIPE_BLOG_PATH)/styles.css $(PHOTOSWIPE_BLOG_PATH)/default-skin/default-skin.css $(PHOTOSWIPE_BLOG_PATH)/photoswipe.css | cssmin > $(PHOTOSWIPE_BLOG_PATH)/styles.min.css
 
 test:
 	py.test
