@@ -209,6 +209,11 @@ figcaption.media-title {
 
 .album_title {
   display: block;
+  font-size: 80%;
+  line-height: initial;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .video {
