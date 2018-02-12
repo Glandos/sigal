@@ -82,31 +82,24 @@
 			<div class="gallery" itemscope itemtype="http://schema.org/ImageGallery">
 				{% for media in album.medias %}
 				  {% set media_title = media.title if media.title else media.filename %}
-					    {% if media.type == "image" %}
-						  	{% if loop.first %}
-						  		<figure class="gallery__img--main thumbnail" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
-									<a href="{{ media.filename }}" itemprop="contentUrl" data-size="{{media.size.width}}x{{media.size.height}}">
-									<img src="{{ theme.url }}/echo/blank.gif" data-echo="{{ media.filename }}" alt="{{ media.filename }}" itemprop="thumbnail" title="{{ media.exif.datetime }}" />
-									</a>
-									<figcaption itemprop="caption description">{{ media_title }} - {{ media.exif.datetime }}</figcaption>
-							    </figure>
-						  	{% else %}
-							    <figure class="gallery__img--secondary thumbnail" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
-									<a href="{{ media.filename }}" itemprop="contentUrl" data-size="{{media.size.width}}x{{media.size.height}}">
-									<img src="{{ theme.url }}/echo/blank.gif" data-echo="{{ media.thumbnail }}" alt="{{ media.filename }}" itemprop="thumbnail" title="{{ media.exif.datetime }}" />
-									</a>
-									<figcaption itemprop="caption description">{{ media_title }} - {{ media.exif.datetime }}</figcaption>
-							    </figure>
-						    {% endif %}
-					    {% endif %}
-                        {% if media.type == "video" %}
-                            <figure class="gallery__img--secondary thumbnail" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
-                                <a href="{{ media.filename }}" itemprop="contentUrl" data-type="video" data-video='<div class="video"><div class="video__container"><video controls><source src="{{ media.filename }}" type="{{ media.mime }}" /></video></div></div>'>
-                                <img src="{{ theme.url }}/echo/blank.gif" data-echo="{{ media.thumbnail }}" alt="{{ media.thumbnail }}" itemprop="thumbnail" title="" />
-                                </a>
-                                <figcaption itemprop="caption description">{{ media_title }}</figcaption>
-                            </figure>
-                        {% endif %}
+				    {% if media.type == "image" %}
+					    <figure class="gallery__img thumbnail" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+							<a href="{{ media.filename }}" itemprop="contentUrl" data-size="{{media.size.width}}x{{media.size.height}}">
+							<img src="{{ theme.url }}/echo/blank.gif" data-echo="{{ media.thumbnail }}" alt="{{ media.filename }}" itemprop="thumbnail" title="{{ media_title }}" />
+							</a>
+							<figcaption itemprop="caption" class="media-title">{{ media_title }}</figcaption>
+							<figcaption itemprop="description" class="media-description">{{ media.description }}</figcaption>
+					    </figure>
+				    {% endif %}
+                      {% if media.type == "video" %}
+                          <figure class="gallery__img thumbnail" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+                              <a href="{{ media.filename }}" itemprop="contentUrl" data-type="video" data-video='<div class="video"><div class="video__container"><video controls><source src="{{ media.filename }}" type="{{ media.mime }}" /></video></div></div>'>
+                              <img src="{{ theme.url }}/echo/blank.gif" data-echo="{{ media.thumbnail }}" alt="{{ media.filename }}" itemprop="thumbnail" title="{{ media_title }}" />
+                              </a>
+						   <figcaption itemprop="caption" class="media-title">{{ media_title }}</figcaption>
+        					   <figcaption itemprop="description" class="media-description">{{ media.description }}</figcaption>
+                          </figure>
+                      {% endif %}
 				{% endfor %}
 			</div>
 		{% endif %}
@@ -398,8 +391,8 @@
 							gallery.next();
 						}
 					}
-					
-				} 
+
+				}
 			};
 			gallery.framework.bind(gallery.scrollWrap, 'pswpTap', tapToNext);
 		});
