@@ -275,3 +275,13 @@ footer {
 footer p {
   text-align: center;
 }
+
+/*****************************
+* Photoswipe custom settings *
+******************************/
+.pswp__caption__title {
+	font-size: 120%;
+	font-weight: bold;
+	margin-bottom: 0.5em;
+	font-variant-caps: small-caps;
+}
