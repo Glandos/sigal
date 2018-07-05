@@ -227,7 +227,15 @@
 
 	            if(figureEl.children.length > 1) {
 	                // <figcaption> content
-	                item.title = figureEl.children[1].innerHTML;
+	                item.title = "<div class='pswp__caption__title'>"
+                	                + figureEl.children[1].innerHTML
+                	                + "</div>";
+	                if(figureEl.children.length > 2) {
+        	                // media-description content
+        	                item.title += "<div class='pswp__caption__description'>"
+                    	                + figureEl.children[2].innerHTML
+                    	                + "</div>";
+	                }
 	            }
 
 	            if(linkEl.children.length > 0) {
