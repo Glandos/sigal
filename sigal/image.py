@@ -55,6 +55,10 @@ def _has_exif_tags(img):
 
 
 def _read_image(file_path):
+    # The image is already opened
+    if isinstance(file_path, PILImage.Image):
+        return file_path
+
     with warnings.catch_warnings(record=True) as caught_warnings:
         im = PILImage.open(file_path)
 
