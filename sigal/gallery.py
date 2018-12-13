@@ -42,7 +42,7 @@ from urllib.parse import quote as url_quote
 
 from . import image, video, signals
 from .image import (process_image, get_exif_tags, get_exif_data, get_size,
-                    get_iptc_data)
+                    get_iptc_data, get_image_metadata)
 from .settings import get_thumb
 from .utils import (Devnull, copy, check_or_create_dir, url_from_path,
                     read_markdown, cached_property, is_valid_html5_video,
@@ -151,6 +151,7 @@ class Media:
         """ Get image metadata from filename.md: title, description, meta."""
         self.description = ''
         self.meta = {}
+        self.file_metadata = {}
         self.title = ''
 
         descfile = splitext(self.src_path)[0] + '.md'
@@ -182,6 +183,8 @@ class Image(Media):
 
     def _get_metadata(self):
         super(Image, self)._get_metadata()
+        src_metadata = get_image_metadata(self.src_path)
+        self.file_metadata[self.src_path] = src_metadata
         # If a title or description hasn't been obtained by other means, look
         #  for the information in IPTC fields
         if self.title and self.description:
@@ -189,7 +192,7 @@ class Image(Media):
             return
 
         try:
-            iptc_data = get_iptc_data(self.src_path)
+            iptc_data = src_metadata.get('iptc', {})
         except Exception as e:
             self.logger.warning('Could not read IPTC data from %s: %s',
                                 self.src_path, e)
@@ -202,7 +205,7 @@ class Image(Media):
     @cached_property
     def raw_exif(self):
         try:
-            return (get_exif_data(self.src_path)
+            return (self.file_metadata[self.src_path]['exif']
                     if self.ext in ('.jpg', '.jpeg') else None)
         except Exception as e:
             self.logger.warning('Could not read EXIF data from %s: %s',

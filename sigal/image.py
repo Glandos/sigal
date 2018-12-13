@@ -255,6 +255,42 @@ def get_iptc_data(filename):
     return iptc_data
 
 
+def get_image_metadata(filename):
+    try:
+        img = _read_image(filename)
+    except Exception as e:
+        logger.error('Could not open image %s metadata: %s',
+                        filename, e)
+
+    exif = None
+    iptc = None
+    size = None
+
+    try:
+        exif = get_exif_data(img)
+    except Exception as e:
+        logger.warning('Could not read EXIF data from %s: %s',
+                        filename, e)
+
+    try:
+        iptc = get_iptc_data(img)
+    except Exception as e:
+        logger.warning('Could not read IPTC data from %s: %s',
+                        filename, e)
+
+    try:
+        size = get_size(img)
+    except Exception as e:
+        logger.warning('Could not read size from %s: %s',
+                        filename, e)
+
+    return {
+            'exif': exif,
+            'iptc': iptc,
+            'size': size,
+            }
+
+
 def dms_to_degrees(v):
     """Convert degree/minute/second to decimal degrees."""
 
