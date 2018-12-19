@@ -34,7 +34,7 @@ from .gallery import Gallery
 from .log import init_logging
 from .pkgmeta import __version__
 from .settings import read_settings
-from .utils import copy
+from .utils import copy, monkey_patch_pil_jpeg_mpo
 
 _DEFAULT_CONFIG_FILE = 'sigal.conf.py'
 
@@ -130,6 +130,8 @@ def build(source, destination, debug, verbose, force, config, theme, title,
         logger.error("Output directory should be outside of the input "
                      "directory.")
         sys.exit(1)
+
+    monkey_patch_pil_jpeg_mpo()
 
     if title:
         settings['title'] = title
