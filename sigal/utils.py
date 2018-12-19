@@ -143,3 +143,27 @@ def monkey_patch_pil_jpeg_mpo():
         return im
 
     Image.OPEN[JpegImageFile.format] = (jpeg_factory, Image.OPEN[JpegImageFile.format][1])
+
+
+def monkey_patch_pil_tiff_imagefiledirectory_v1():
+    '''
+    Check that **only** legacy api is used
+    '''
+    from PIL.TiffImagePlugin import ImageFileDirectory_v1
+
+    def __setitem__(self, tag, value):
+        self._setitem(tag, value, True)
+
+    def __getitem__(self, tag):
+        if tag not in self._tags_v1:  # unpack on the fly
+            data = self._tagdata[tag]
+            typ = self.tagtype[tag]
+            size, handler = self._load_dispatch[typ]
+            self._setitem(tag, handler(self, data, True), True)
+        val = self._tags_v1[tag]
+        if not isinstance(val, (tuple, bytes)):
+            val = val,
+        return val
+
+    ImageFileDirectory_v1.__setitem__ = __setitem__
+    ImageFileDirectory_v1.__getitem__ = __getitem__

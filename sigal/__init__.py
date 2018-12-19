@@ -34,7 +34,7 @@ from .gallery import Gallery
 from .log import init_logging
 from .pkgmeta import __version__
 from .settings import read_settings
-from .utils import copy, monkey_patch_pil_jpeg_mpo
+from .utils import copy, monkey_patch_pil_jpeg_mpo, monkey_patch_pil_tiff_imagefiledirectory_v1
 
 _DEFAULT_CONFIG_FILE = 'sigal.conf.py'
 
@@ -132,6 +132,7 @@ def build(source, destination, debug, verbose, force, config, theme, title,
         sys.exit(1)
 
     monkey_patch_pil_jpeg_mpo()
+    monkey_patch_pil_tiff_imagefiledirectory_v1()
 
     if title:
         settings['title'] = title
