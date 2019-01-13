@@ -81,7 +81,6 @@ class Media:
         self.thumb_name = get_thumb(self.settings, self.filename)
         self.thumb_path = join(settings['destination'], path, self.thumb_name)
 
-        self.logger = logging.getLogger(__name__)
         self._get_metadata()
         # default: title is the filename
         if not self.title:
@@ -93,6 +92,10 @@ class Media:
 
     def __str__(self):
         return join(self.path, self.filename)
+
+    @cached_property
+    def logger(self):
+        logging.getLogger(__name__)
 
     @property
     def url(self):
