@@ -39,7 +39,7 @@ import fractions
 from copy import deepcopy
 from datetime import datetime
 from PIL.ExifTags import TAGS, GPSTAGS
-from PIL import Image as PILImage, ImageOps, ImageFile, IptcImagePlugin
+from PIL import Image as PILImage, ImageOps, ImageFile, IptcImagePlugin, JpegImagePlugin
 from pilkit.processors import Transpose
 from pilkit.utils import save_image
 
@@ -48,6 +48,10 @@ from .settings import get_thumb, Status
 
 # Force loading of truncated files
 ImageFile.LOAD_TRUNCATED_IMAGES = True
+
+
+REVERSE_TAGS = dict((v, k) for k, v in TAGS.items())
+REVERSE_GPSTAGS = dict((v, k) for k, v in GPSTAGS.items())
 
 
 def _has_exif_tags(img):
@@ -206,6 +210,29 @@ def get_size(file_path):
         }
 
 
+class NamedExifImageFileDirectory(JpegImagePlugin.ExifImageFileDirectory):
+    '''
+    This class is useful to lookup value with tag name.
+    It is still possible to lookup with tag number.
+    '''
+
+    tags = REVERSE_TAGS
+
+    def __getitem__(self, tag):
+        return super().__getitem__(self.tags.get(tag, tag))
+
+    def __contains__(self, tag):
+        return super().__contains__(self.tags.get(tag, tag))
+
+
+# Same type as before, but with another sets of tag names
+GPSNamedExifImageFileDirectory = type(
+        'GPSNamedExifImageFileDirectory',
+        (NamedExifImageFileDirectory, ),
+        {'tags': REVERSE_GPSTAGS}
+        )
+
+
 def get_exif_data(filename):
     """Return a dict with the raw EXIF data."""
 
@@ -214,17 +241,22 @@ def get_exif_data(filename):
     img = _read_image(filename)
 
     try:
-        exif = img._getexif() or {}
+        data = img._getexif()
     except ZeroDivisionError:
         logger.warning('Failed to read EXIF data.')
         return None
 
-    data = {TAGS.get(tag, tag): value for tag, value in exif.items()}
+    if data is not None:
+        try:
+            data.__class__ = NamedExifImageFileDirectory
+        except TypeError:
+            pass
+    else:
+        data = {}
 
     if 'GPSInfo' in data:
         try:
-            data['GPSInfo'] = {GPSTAGS.get(tag, tag): value
-                               for tag, value in data['GPSInfo'].items()}
+            data['GPSInfo'].__class__ = GPSNamedExifImageFileDirectory
         except AttributeError:
             logger = logging.getLogger(__name__)
             logger.info('Failed to get GPS Info')
