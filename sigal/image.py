@@ -236,13 +236,12 @@ GPSNamedExifImageFileDirectory = type(
 def get_exif_data(filename):
     """Return a dict with the raw EXIF data."""
 
-    logger = logging.getLogger(__name__)
-
     img = _read_image(filename)
 
     try:
         data = img._getexif()
     except ZeroDivisionError:
+        logger = logging.getLogger(__name__)
         logger.warning('Failed to read EXIF data.')
         return None
 
