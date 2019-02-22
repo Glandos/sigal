@@ -250,17 +250,23 @@ def get_exif_data(filename):
         try:
             data.__class__ = NamedExifImageFileDirectory
         except TypeError:
-            pass
+            # Old method, that read all tags
+            data = {TAGS.get(tag, tag): value for tag, value in data.items()}
     else:
         data = {}
 
     if 'GPSInfo' in data:
         try:
             data['GPSInfo'].__class__ = GPSNamedExifImageFileDirectory
-        except AttributeError:
-            logger = logging.getLogger(__name__)
-            logger.info('Failed to get GPS Info')
-            del data['GPSInfo']
+        except TypeError:
+            # Old method
+            try:
+                data['GPSInfo'] = {GPSTAGS.get(tag, tag): value
+                                   for tag, value in data['GPSInfo'].items()}
+            except AttributeError:
+                logger = logging.getLogger(__name__)
+                logger.info('Failed to get GPS Info')
+                del data['GPSInfo']
     return data
 
 
